@@ -14,19 +14,29 @@ namespace robo
 
         public static void Main(string[] args)
         {
+            //criar robo e iniciar mapa
             Robo robo = new Robo();
             Posicao posicaoAtual = new Posicao();
             startMapa(mapa);
+            robo.TamanhoMapa = (tamanhoMatriz-2)*(tamanhoMatriz-2);
+
+            //setando base do robô 
             mapa[baseLinha, baseColuna] = 9;
+            robo.MemoriaMapa.Add(new Posicao(baseLinha, baseColuna, true));
             posicaoAtual.Coluna = 1;
             posicaoAtual.Linha = 1;
+            /*
+             - Ajustar coleta de lixo *** criar funcao que verifique a casa e quantidade lixo se pode pegar ou nao
+             - Ajustar voltar pra base *** unico caso funcional é quando a base está no 0,0
+             - Criar próximas passagens *** após recarregar, limpar lixo e/ou finalizar limpeza, recriar passagem
+            */
+
             ImprimirMapa(mapa, posicaoAtual);
             int direcao = -1;
-            while(robo.Bateria >= 25)
+            while(robo.Bateria >= 25 && !robo.AmbienteLimpo() && robo.LixoColetado <= robo.CapacidadeLixo)
             {
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 0;
-
-
+                System.Console.WriteLine("numero de memoria gravada: " + robo.MemoriaMapa.Count);
+                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 0; //limpando casa anterior
                 (posicaoAtual, direcao) = robo.Mover(posicaoAtual, direcao);
                 System.Console.WriteLine("direcao na main: " + direcao);
                 System.Console.WriteLine(posicaoAtual.Linha + " - " + posicaoAtual.Coluna);
@@ -41,7 +51,7 @@ namespace robo
                 posicaoAtual = robo.MoverPraBase(posicaoAtual);
                 mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
                 ImprimirMapa(mapa, posicaoAtual);
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
             }
         }
 
