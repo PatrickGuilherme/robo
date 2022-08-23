@@ -33,31 +33,56 @@ namespace robo
 
             ImprimirMapa(mapa, posicaoAtual);
             int direcao = -1;
-            while (robo.Bateria >= 25 && !robo.AmbienteLimpo() && !robo.lixeiraCheia())
+            int continueProgram = 1;
+            while (continueProgram != 0)
             {
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal; //limpando casa anterior
-                (posicaoAtual, direcao, lixoLocal) = robo.Mover(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, false), direcao);
-                posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
-                ImprimirMapa(mapa, posicaoAtual);
-                // robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
-                // System.Console.Write('\n')
-                Thread.Sleep(500);
+                while (robo.Bateria >= 25 && !robo.AmbienteLimpo() && !robo.lixeiraCheia())
+                {
+
+                    mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal; //limpando casa anterior
+                    (posicaoAtual, direcao, lixoLocal) = robo.Mover(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, false), direcao);
+                    posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
+                    mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
+                    ImprimirMapa(mapa, posicaoAtual);
+                    // robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
+                    // System.Console.Write('\n');
+                    Thread.Sleep(500);
+                }
+
+                System.Console.WriteLine("voltando pra base ---------------");
+                while (posicaoAtual.Linha != baseLinha || posicaoAtual.Coluna != baseColuna)
+                {
+                    mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal;
+                    (posicaoAtual, lixoLocal) = robo.MoverPraBase(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, posicaoAtual.Limpo));
+                    posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
+                    mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
+                    ImprimirMapa(mapa, posicaoAtual);
+                    // robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
+                    // System.Console.Write('\n');
+                    Thread.Sleep(500);
+                }
+                if (robo.AmbienteLimpo())
+                {
+                    Console.WriteLine("tudo limpo");
+                    break;
+                }
+                while (posicaoAtual.Linha == baseLinha && posicaoAtual.Coluna == baseColuna)
+                {
+                    Console.WriteLine("Carregando... ");
+                    robo.Bateria += 10;
+                    if (robo.Bateria >= 100)
+                    {
+                        robo.Bateria = 100;
+                        Console.WriteLine("bateria " + robo.Bateria + "%");
+                        break;
+                    }
+                    Console.WriteLine("bateria " + robo.Bateria + "%");
+                    Thread.Sleep(1000);
+
+                }
+                // System.Console.WriteLine("ultima posicao");
+                // ImprimirMapa(mapa, posicaoAtual);
             }
-            System.Console.WriteLine("voltando pra base ---------------");
-            while (posicaoAtual.Linha != baseLinha || posicaoAtual.Coluna != baseColuna)
-            {
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal;
-                (posicaoAtual, lixoLocal) = robo.MoverPraBase(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, posicaoAtual.Limpo));
-                posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
-                ImprimirMapa(mapa, posicaoAtual);
-                //robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
-                //System.Console.Write('\n');
-                Thread.Sleep(500);
-            }
-            System.Console.WriteLine("ultima posicao");
-            ImprimirMapa(mapa, posicaoAtual);
         }
 
         private static void startMapa(int[,] mapa)
@@ -117,7 +142,7 @@ namespace robo
         {
             linha += baseLinha;
             coluna += baseColuna;
-            System.Console.WriteLine("consulta Mapa : linha " + linha + " - coluna " + coluna);
+            // System.Console.WriteLine("consulta Mapa : linha " + linha + " - coluna " + coluna);
             if (linha <= tamanhoMatriz && linha >= 0 && coluna <= tamanhoMatriz && coluna >= 0)
             {
                 return mapa[linha, coluna];

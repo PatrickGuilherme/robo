@@ -93,7 +93,7 @@ namespace robo
             {
                 int lixoDaCasa = this.ColetaLixo(nextPos);
                 this.ReduzirBateria(nextPos - lixoDaCasa);
-                // System.Console.Clear();
+                System.Console.Clear();
                 System.Console.WriteLine("nivel de lixo: " + this.LixoColetado + "/" + this.CapacidadeLixo);
                 System.Console.WriteLine("Nível bateria: " + this.Bateria + "/100");
                 System.Console.WriteLine(pAtual.Linha + " - " + pAtual.Coluna + " //antes de mover");
@@ -209,7 +209,7 @@ namespace robo
         {
             Posicao proxPosicao = new Posicao();
             int lixoDaCasa = 0;
-            // System.Console.Clear();
+            System.Console.Clear();
             if (pAtual.Linha >= 0 && pAtual.Coluna >= 0)
             {
                 for (int l = -1; l < 1; l++)
