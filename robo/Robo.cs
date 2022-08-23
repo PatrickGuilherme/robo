@@ -15,8 +15,8 @@ namespace robo
         public int LixoColetado { get; set; }
         public Robo()
         {
-            this.Bateria = 100;
-            this.CapacidadeLixo = 100;
+            this.Bateria = 200;
+            this.CapacidadeLixo = 70;
             this.LixoColetado = 0;
             this.MemoriaMapa = new List<Posicao>();
             this.MemoriaMapa.Add(new Posicao(0, 0, true));
@@ -95,7 +95,7 @@ namespace robo
                 this.ReduzirBateria(nextPos - lixoDaCasa);
                 System.Console.Clear();
                 System.Console.WriteLine("nivel de lixo: " + this.LixoColetado + "/" + this.CapacidadeLixo);
-                System.Console.WriteLine("Nível bateria: " + this.Bateria + "/100");
+                System.Console.WriteLine("Nível bateria: " + this.Bateria/2 + "/100");
                 System.Console.WriteLine(pAtual.Linha + " - " + pAtual.Coluna + " //antes de mover");
                 Posicao posicaoSeguinte;
                 if (lixoDaCasa == 0)
@@ -135,7 +135,7 @@ namespace robo
                 }
                 System.Console.WriteLine("nivel de lixo: " + this.LixoColetado + "/" + this.CapacidadeLixo);
                 System.Console.WriteLine(pAtual.Linha + " - " + pAtual.Coluna + "//voltando pra base");
-                System.Console.WriteLine("Nível bateria: " + this.Bateria + "/100");
+                System.Console.WriteLine("Nível bateria: " + this.Bateria/2 + "/100");
                 return (proxPosicao, lixoDaCasa);
             }
             return (null, 0);

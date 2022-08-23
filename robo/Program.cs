@@ -18,7 +18,13 @@ namespace robo
             Robo robo = new Robo();
             Posicao posicaoAtual = new Posicao();
             int lixoLocal = 0;
-            startMapa(mapa);
+            Console.WriteLine("Qual o nivel de sujeira da casa que voce quer? [entre 0 e 5]");
+            int nivelSujeira = Convert.ToInt32(Console.ReadLine());
+            if (nivelSujeira < 0)
+                nivelSujeira = 0;
+            else if (nivelSujeira > 5)
+                nivelSujeira = 5;
+            startMapa(mapa, nivelSujeira);
             robo.TamanhoMapa = (tamanhoMatriz - 2) * (tamanhoMatriz - 2);
 
             //setando base do robô 
@@ -97,7 +103,7 @@ namespace robo
             }
         }
 
-        private static void startMapa(int[,] mapa)
+        private static void startMapa(int[,] mapa, int nivelSujeira)
         {
             int l, c;
             for (l = 0; l < tamanhoMatriz; l++)
@@ -115,7 +121,7 @@ namespace robo
 
                 }
             }
-            SetAmbiente(mapa);
+            SetAmbiente(mapa, nivelSujeira);
 
         }
         //PAREDE = -1
@@ -126,7 +132,7 @@ namespace robo
         //LIXO = 1,2,3
 
 
-        private static void SetAmbiente(int[,] mapa)
+        private static void SetAmbiente(int[,] mapa, int nivelSujeira)
         {
             Random rnd = new Random();
             int l, c, sujeira;
@@ -136,7 +142,7 @@ namespace robo
                 {
                     if (mapa[l, c] >= 0)
                     {
-                        sujeira = rnd.Next(10);
+                        sujeira = rnd.Next(10 - nivelSujeira);
                         if (sujeira < 4 && sujeira > 0)
                         {
                             mapa[l, c] = sujeira;
