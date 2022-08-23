@@ -17,42 +17,47 @@ namespace robo
             //criar robo e iniciar mapa
             Robo robo = new Robo();
             Posicao posicaoAtual = new Posicao();
+            int lixoLocal = 0;
             startMapa(mapa);
-            robo.TamanhoMapa = (tamanhoMatriz-2)*(tamanhoMatriz-2);
+            robo.TamanhoMapa = (tamanhoMatriz - 2) * (tamanhoMatriz - 2);
 
             //setando base do robô 
             mapa[baseLinha, baseColuna] = 9;
-            robo.MemoriaMapa.Add(new Posicao(baseLinha, baseColuna, true));
-            posicaoAtual.Coluna = 1;
-            posicaoAtual.Linha = 1;
+            posicaoAtual.Coluna = baseColuna;
+            posicaoAtual.Linha = baseLinha;
             /*
-             - Ajustar coleta de lixo *** criar funcao que verifique a casa e quantidade lixo se pode pegar ou nao
+             -check = Ajustar coleta de lixo *** criar funcao que verifique a casa e quantidade lixo se pode pegar ou nao
              - Ajustar voltar pra base *** unico caso funcional é quando a base está no 0,0
              - Criar próximas passagens *** após recarregar, limpar lixo e/ou finalizar limpeza, recriar passagem
             */
 
             ImprimirMapa(mapa, posicaoAtual);
             int direcao = -1;
-            while(robo.Bateria >= 25 && !robo.AmbienteLimpo() && robo.LixoColetado <= robo.CapacidadeLixo)
+            while (robo.Bateria >= 25 && !robo.AmbienteLimpo() && !robo.lixeiraCheia())
             {
-                System.Console.WriteLine("numero de memoria gravada: " + robo.MemoriaMapa.Count);
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 0; //limpando casa anterior
-                (posicaoAtual, direcao) = robo.Mover(posicaoAtual, direcao);
-                System.Console.WriteLine("direcao na main: " + direcao);
-                System.Console.WriteLine(posicaoAtual.Linha + " - " + posicaoAtual.Coluna);
+                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal; //limpando casa anterior
+                (posicaoAtual, direcao, lixoLocal) = robo.Mover(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, false), direcao);
+                posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
                 mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
                 ImprimirMapa(mapa, posicaoAtual);
+                // robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
+                // System.Console.Write('\n')
                 Thread.Sleep(500);
             }
             System.Console.WriteLine("voltando pra base ---------------");
             while (posicaoAtual.Linha != baseLinha || posicaoAtual.Coluna != baseColuna)
             {
-                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 0;
-                posicaoAtual = robo.MoverPraBase(posicaoAtual);
+                mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = lixoLocal;
+                (posicaoAtual, lixoLocal) = robo.MoverPraBase(new Posicao(posicaoAtual.Linha - baseLinha, posicaoAtual.Coluna - baseColuna, posicaoAtual.Limpo));
+                posicaoAtual = new Posicao(posicaoAtual.Linha + baseLinha, posicaoAtual.Coluna + baseColuna, posicaoAtual.Limpo);
                 mapa[posicaoAtual.Linha, posicaoAtual.Coluna] = 66;
                 ImprimirMapa(mapa, posicaoAtual);
+                //robo.MemoriaMapa.ForEach(p => System.Console.Write("| " + p.Linha + " - " + p.Coluna + " |"));
+                //System.Console.Write('\n');
                 Thread.Sleep(500);
             }
+            System.Console.WriteLine("ultima posicao");
+            ImprimirMapa(mapa, posicaoAtual);
         }
 
         private static void startMapa(int[,] mapa)
@@ -110,7 +115,10 @@ namespace robo
 
         public static int ConsultaMapa(int linha, int coluna)
         {
-            if (linha <= tamanhoMatriz && coluna <= tamanhoMatriz)
+            linha += baseLinha;
+            coluna += baseColuna;
+            System.Console.WriteLine("consulta Mapa : linha " + linha + " - coluna " + coluna);
+            if (linha <= tamanhoMatriz && linha >= 0 && coluna <= tamanhoMatriz && coluna >= 0)
             {
                 return mapa[linha, coluna];
             }
