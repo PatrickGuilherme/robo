@@ -168,9 +168,29 @@ namespace robo
                 {
 
                     if (mapa[l, c] >= 0 && mapa[l, c] < 10)
-                        System.Console.Write("  " + mapa[l, c]);
+                    {
+                        if (mapa[l, c] == 0)
+                            System.Console.Write("   ");
+                        else if (mapa[l, c] == 9)
+                            System.Console.Write(" [ ");
+                        else if (mapa[l, c] == 1)
+                            System.Console.Write(" . ");
+                        else if (mapa[l, c] == 2)
+                            System.Console.Write(" : ");
+                        else if (mapa[l, c] == 3)
+                            System.Console.Write(".:.");
+                        else if (mapa[l, c] > 0)
+                            System.Console.Write(" " + mapa[l, c] + " ");
+                    }
                     else
-                        System.Console.Write(" " + mapa[l, c]);
+                    {
+                        if (mapa[l, c] == 66)
+                            System.Console.Write(" O ");
+                        else if (mapa[l, c] == -1)
+                            System.Console.Write(" # ");
+                        else
+                            System.Console.Write(" " + mapa[l, c]);
+                    }
                 }
                 System.Console.WriteLine();
             }
