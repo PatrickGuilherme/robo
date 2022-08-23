@@ -74,12 +74,24 @@ namespace robo
                     {
                         robo.Bateria = 100;
                         Console.WriteLine("bateria " + robo.Bateria + "%");
+                        string option = "";
+                        do
+                        {
+                            Console.WriteLine("Quer limpar o arumba? [s/n]");
+                            option = Console.ReadLine();
+                        }
+                        while (option != "s" && option != "n");
+                        if (option == "s")
+                        {
+                            robo.LixoColetado = 0;
+                        }
                         break;
                     }
                     Console.WriteLine("bateria " + robo.Bateria + "%");
                     Thread.Sleep(1000);
 
                 }
+
                 // System.Console.WriteLine("ultima posicao");
                 // ImprimirMapa(mapa, posicaoAtual);
             }
